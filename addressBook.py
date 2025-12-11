@@ -78,13 +78,23 @@ class AddressBook:
       
       print("Contact updated successfully!")
       return True
+    
+   def delete_contact(self,first_name,last_name):
+      contact = self.find_contact(first_name,last_name)
+      if not contact:
+         print(f"Contact Not found for `{first_name} {last_name}`")
+         return False
+      self.contacts.remove(contact)
+      print("Deleted success")
+      return True
+
 
 def main():
  print("Welcome to Address Book Program")
 
  book = AddressBook()
  while True:
-        print("\n1. Add Contact\n2. Show Contacts\n3. Edit Contact\n4. Exit")
+        print("\n1. Add Contact\n2. Show Contacts\n3. Edit Contact\n4.Delete \n5. Exit")
         choice = input("Choose option: ")
         if choice == "1":
             first_name = input("First Name: ")
@@ -108,6 +118,13 @@ def main():
                 last_name = input("Enter last name of contact to edit: ")
                 book.edit_contact(first_name, last_name)
         elif choice == "4":
+           if not book.contacts:
+              print("NO contacts avalable")
+           else:
+              first_name = input(f"Enter the First name:")
+              last_name = input(f"Enter the Last name")
+              book.delete_contact(first_name,last_name)         
+        elif choice == "5":
             print("Goodbye!")
             break
         else:
