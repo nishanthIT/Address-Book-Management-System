@@ -13,26 +13,78 @@ class Contact:
         return (f"{self.first_name} {self.last_name}\n"
                 f"Address: {self.address}, {self.city}, {self.state}, {self.zip_code}\n"
                 f"Phone: {self.phone}\nEmail: {self.email}\n")
+
 class AddressBook:
    def __init__(self):
       self.contacts = []
    
-   def add_contact(self,contact):
+   def add_contact(self, contact):
       self.contacts.append(contact)
+   
    def show_contacts(self):
       if not self.contacts:
-         print("No contact")
-      for contact in self.contacts:
+         print("No contacts found.")
+         return
+      for i, contact in enumerate(self.contacts, 1):
+         print(f"Contact {i}:")
          print(contact)
-               
+   
+   def find_contact(self, first_name, last_name):
+      for contact in self.contacts:
+         if contact.first_name.lower() == first_name.lower() and contact.last_name.lower() == last_name.lower():
+            return contact
+      return None
+   
+   def edit_contact(self, first_name, last_name):
+      contact = self.find_contact(first_name, last_name)
+      if not contact:
+         print(f"Contact '{first_name} {last_name}' not found.")
+         return False
+      
+      print(f"Editing contact: {contact.first_name} {contact.last_name}")
+      print("Press Enter to keep current value, or type new value:")
+      
+      new_first_name = input(f"First Name ({contact.first_name}): ").strip()
+      if new_first_name:
+         contact.first_name = new_first_name
+      
+      new_last_name = input(f"Last Name ({contact.last_name}): ").strip()
+      if new_last_name:
+         contact.last_name = new_last_name
+      
+      new_address = input(f"Address ({contact.address}): ").strip()
+      if new_address:
+         contact.address = new_address
+      
+      new_city = input(f"City ({contact.city}): ").strip()
+      if new_city:
+         contact.city = new_city
+      
+      new_state = input(f"State ({contact.state}): ").strip()
+      if new_state:
+         contact.state = new_state
+      
+      new_zip = input(f"ZIP ({contact.zip_code}): ").strip()
+      if new_zip:
+         contact.zip_code = new_zip
+      
+      new_phone = input(f"Phone ({contact.phone}): ").strip()
+      if new_phone:
+         contact.phone = new_phone
+      
+      new_email = input(f"Email ({contact.email}): ").strip()
+      if new_email:
+         contact.email = new_email
+      
+      print("Contact updated successfully!")
+      return True
 
 def main():
  print("Welcome to Address Book Program")
 
-
  book = AddressBook()
  while True:
-        print("\n1. Add Contact\n2. Show Contacts\n3. Exit")
+        print("\n1. Add Contact\n2. Show Contacts\n3. Edit Contact\n4. Exit")
         choice = input("Choose option: ")
         if choice == "1":
             first_name = input("First Name: ")
@@ -49,15 +101,17 @@ def main():
         elif choice == "2":
             book.show_contacts()
         elif choice == "3":
+            if not book.contacts:
+                print("No contacts to edit.")
+            else:
+                first_name = input("Enter first name of contact to edit: ")
+                last_name = input("Enter last name of contact to edit: ")
+                book.edit_contact(first_name, last_name)
+        elif choice == "4":
             print("Goodbye!")
             break
         else:
             print("Invalid option.")
 
- 
-
-
-
-    
 if __name__ == "__main__":
     main()
