@@ -105,6 +105,46 @@ class AddressBook:
       self.contacts.remove(contact)
       print("Deleted success")
       return True
+   
+   def sort_by_name(self):
+      """Sort contacts alphabetically by person's name - UC 11"""
+      if not self.contacts:
+         print("No contacts to sort.")
+         return
+      
+      self.contacts.sort(key=lambda contact: (contact.first_name.lower(), contact.last_name.lower()))
+      print(f"Contacts in '{self.name}' sorted by name.")
+      self.show_contacts()
+   
+   def sort_by_city(self):
+      """Sort contacts by city - UC 12"""
+      if not self.contacts:
+         print("No contacts to sort.")
+         return
+      
+      self.contacts.sort(key=lambda contact: contact.city.lower())
+      print(f"Contacts in '{self.name}' sorted by city.")
+      self.show_contacts()
+   
+   def sort_by_state(self):
+      """Sort contacts by state - UC 12"""
+      if not self.contacts:
+         print("No contacts to sort.")
+         return
+      
+      self.contacts.sort(key=lambda contact: contact.state.lower())
+      print(f"Contacts in '{self.name}' sorted by state.")
+      self.show_contacts()
+   
+   def sort_by_zip(self):
+      """Sort contacts by zip code - UC 12"""
+      if not self.contacts:
+         print("No contacts to sort.")
+         return
+      
+      self.contacts.sort(key=lambda contact: contact.zip_code)
+      print(f"Contacts in '{self.name}' sorted by ZIP code.")
+      self.show_contacts()
 
 
 class AddressBookManager:
@@ -173,6 +213,78 @@ class AddressBookManager:
       for book_name, contact in results:
          print(f"Address Book: {book_name}")
          print(contact)
+   
+   def view_persons_by_city(self):
+      """View persons by city using dictionary - UC 9"""
+      city_dict = {}
+      for book_name, book in self.address_books.items():
+         for contact in book.contacts:
+            city = contact.city
+            if city not in city_dict:
+               city_dict[city] = []
+            city_dict[city].append((book_name, contact))
+      
+      if not city_dict:
+         print("No contacts available.")
+         return
+      
+      print("\n========== View Persons by City ==========")
+      for city in sorted(city_dict.keys()):
+         print(f"\nCity: {city} (Count: {len(city_dict[city])})")
+         for book_name, contact in city_dict[city]:
+            print(f"  - {contact.first_name} {contact.last_name} (Address Book: {book_name})")
+   
+   def view_persons_by_state(self):
+      """View persons by state using dictionary - UC 9"""
+      state_dict = {}
+      for book_name, book in self.address_books.items():
+         for contact in book.contacts:
+            state = contact.state
+            if state not in state_dict:
+               state_dict[state] = []
+            state_dict[state].append((book_name, contact))
+      
+      if not state_dict:
+         print("No contacts available.")
+         return
+      
+      print("\n========== View Persons by State ==========")
+      for state in sorted(state_dict.keys()):
+         print(f"\nState: {state} (Count: {len(state_dict[state])})")
+         for book_name, contact in state_dict[state]:
+            print(f"  - {contact.first_name} {contact.last_name} (Address Book: {book_name})")
+   
+   def get_count_by_city(self):
+      """Get count of persons by city - UC 10"""
+      city_count = {}
+      for book_name, book in self.address_books.items():
+         for contact in book.contacts:
+            city = contact.city
+            city_count[city] = city_count.get(city, 0) + 1
+      
+      if not city_count:
+         print("No contacts available.")
+         return
+      
+      print("\n========== Count by City ==========")
+      for city in sorted(city_count.keys()):
+         print(f"{city}: {city_count[city]} person(s)")
+   
+   def get_count_by_state(self):
+      """Get count of persons by state - UC 10"""
+      state_count = {}
+      for book_name, book in self.address_books.items():
+         for contact in book.contacts:
+            state = contact.state
+            state_count[state] = state_count.get(state, 0) + 1
+      
+      if not state_count:
+         print("No contacts available.")
+         return
+      
+      print("\n========== Count by State ==========")
+      for state in sorted(state_count.keys()):
+         print(f"{state}: {state_count[state]} person(s)")
 
 
 def main():
@@ -192,9 +304,17 @@ def main():
            print("5. Show Contacts")
            print("6. Edit Contact")
            print("7. Delete Contact")
-        print("8. Search by City")
-        print("9. Search by State")
-        print("10. Exit")
+           print("8. Sort by Name")
+           print("9. Sort by City")
+           print("10. Sort by State")
+           print("11. Sort by ZIP")
+        print("12. Search by City")
+        print("13. Search by State")
+        print("14. View Persons by City")
+        print("15. View Persons by State")
+        print("16. Count by City")
+        print("17. Count by State")
+        print("18. Exit")
         
         choice = input("Choose option: ")
         
@@ -254,18 +374,54 @@ def main():
               current_book.delete_contact(first_name, last_name)
         
         elif choice == "8":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              current_book.sort_by_name()
+        
+        elif choice == "9":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              current_book.sort_by_city()
+        
+        elif choice == "10":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              current_book.sort_by_state()
+        
+        elif choice == "11":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              current_book.sort_by_zip()
+        
+        elif choice == "12":
            city = input("Enter city name to search: ").strip()
            if city:
               results = manager.search_by_city(city)
               manager.display_search_results(results, "City", city)
         
-        elif choice == "9":
+        elif choice == "13":
            state = input("Enter state name to search: ").strip()
            if state:
               results = manager.search_by_state(state)
               manager.display_search_results(results, "State", state)
         
-        elif choice == "10":
+        elif choice == "14":
+           manager.view_persons_by_city()
+        
+        elif choice == "15":
+           manager.view_persons_by_state()
+        
+        elif choice == "16":
+           manager.get_count_by_city()
+        
+        elif choice == "17":
+           manager.get_count_by_state()
+        
+        elif choice == "18":
            print("Goodbye!")
            break
         
