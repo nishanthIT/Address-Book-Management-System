@@ -30,7 +30,9 @@ class AddressBook:
         for i in self.contacts:
             if (i.first_name.lower() == first_name.lower() and i.last_name.lower() == last_name.lower()):
                 return i
-        print("Contact Not Found")
+        print("Contact Not Found")    
+        return None    
+       
 
     def edit_contact(self,first_name,last_name):
         contact = self.find_contact(first_name,last_name)
@@ -43,22 +45,41 @@ class AddressBook:
         contact.phone_number = input("Enter the Phone Number: ")
     def delete_contact(self,first_name,last_name):
         contact = self.find_contact(first_name,last_name)
+        if not contact:
+            print("No contact found")
+            return
         self.contacts.remove(contact)
         print("Removed Success")
 
-address_book =AddressBook()
+
+address_books ={
+}
 
 while True:
     print("Welcome to Address Book ")
-    print("1. Add Contact")
-    print("2. View Contacts")
-    print("3. Edit contact")
-    print("4. Delete contact")
-    print("5. Exit")
+    print("1. Create a Address Book")
+    print("2. Add Contact")
+    print("3. View Contacts")
+    print("4. Edit contact")
+    print("5. Delete contact")
+    print("6. Exit")
 
     choice = input("Enter Your choice: ")
+    if choice == "1":
+        name = input("Enter the name of the address Book")
+        if name in address_books:
+            print("Addres book Already Exist")
+        else:
+            address_books[name] = AddressBook()
 
-    if choice == "1":   
+
+    elif choice == "2":   
+        name = input("Enter the Address book name")
+
+        if name not in address_books:
+            print("Name not in the address Book")
+
+
         first_name = input("Enter the First name: ")
         last_name = input("Enter the Last name: ")
         address = input("Enter the address: ")
@@ -68,19 +89,30 @@ while True:
         phone_number = input("Enter the phone number:")
         
         contact = Contact(first_name,last_name,address,city,state,zip,phone_number)
-        address_book.addContact(contact)
-    elif choice =="2":
-         address_book.desplay_contact()
+        address_books[name].addContact(contact)
     elif choice =="3":
-        first_name = input("Enter the first Name: ")     
-        last_name = input("Enter the last Name: ")
-        address_book.edit_contact(first_name,last_name)
+         name = input("Enter the address Book Name: ")
+         if name not in address_books:
+             print("name Not found")
+         address_books[name].desplay_contact()
     elif choice =="4":
+        name = input("Enter the address Book Name: ")
+        if name not in address_books:
+             print("name Not found")
+
         first_name = input("Enter the first Name: ")     
         last_name = input("Enter the last Name: ")
-        address_book.delete_contact(first_name,last_name)
+        address_books[name].edit_contact(first_name,last_name)
 
     elif choice =="5":
+        name = input("Enter the address Book Name: ")
+        if name not in address_books:
+             print("name Not found")
+        first_name = input("Enter the first Name: ")     
+        last_name = input("Enter the last Name: ")
+        address_books[name].delete_contact(first_name,last_name)
+
+    elif choice =="6":
         print("exiting...")
         break
     else:
