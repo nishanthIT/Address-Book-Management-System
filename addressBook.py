@@ -1,3 +1,7 @@
+import csv
+import json
+import os
+
 class Contact:
     def __init__(self, first_name, last_name, address, city, state, zip_code, phone, email):
         self.first_name = first_name
@@ -24,6 +28,33 @@ class Contact:
     def __hash__(self):
         """Override hash method to enable use in sets and dictionaries"""
         return hash((self.first_name.lower(), self.last_name.lower()))
+    
+    def to_dict(self):
+        """Convert contact to dictionary for JSON/CSV serialization"""
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'address': self.address,
+            'city': self.city,
+            'state': self.state,
+            'zip_code': self.zip_code,
+            'phone': self.phone,
+            'email': self.email
+        }
+    
+    @staticmethod
+    def from_dict(data):
+        """Create contact from dictionary"""
+        return Contact(
+            first_name=data.get('first_name', ''),
+            last_name=data.get('last_name', ''),
+            address=data.get('address', ''),
+            city=data.get('city', ''),
+            state=data.get('state', ''),
+            zip_code=data.get('zip_code', ''),
+            phone=data.get('phone', ''),
+            email=data.get('email', '')
+        )
 
 class AddressBook:
    def __init__(self, name):
@@ -145,6 +176,106 @@ class AddressBook:
       self.contacts.sort(key=lambda contact: contact.zip_code)
       print(f"Contacts in '{self.name}' sorted by ZIP code.")
       self.show_contacts()
+   
+   def write_to_file(self, filename):
+      """Write address book to text file - UC 13"""
+      try:
+         with open(filename, 'w', encoding='utf-8') as file:
+            file.write(f"Address Book: {self.name}\n")
+            file.write("=" * 50 + "\n\n")
+            for contact in self.contacts:
+               file.write(str(contact))
+               file.write("\n")
+         print(f"Address book saved to {filename}")
+         return True
+      except Exception as e:
+         print(f"Error writing to file: {e}")
+         return False
+   
+   def read_from_file(self, filename):
+      """Read address book from text file - UC 13"""
+      try:
+         with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+            print(f"\nContent from {filename}:\n")
+            print(content)
+         return True
+      except FileNotFoundError:
+         print(f"File {filename} not found.")
+         return False
+      except Exception as e:
+         print(f"Error reading file: {e}")
+         return False
+   
+   def write_to_csv(self, filename):
+      """Write address book to CSV file - UC 14"""
+      try:
+         with open(filename, 'w', newline='', encoding='utf-8') as file:
+            fieldnames = ['first_name', 'last_name', 'address', 'city', 'state', 'zip_code', 'phone', 'email']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for contact in self.contacts:
+               writer.writerow(contact.to_dict())
+         print(f"Address book saved to CSV: {filename}")
+         return True
+      except Exception as e:
+         print(f"Error writing to CSV: {e}")
+         return False
+   
+   def read_from_csv(self, filename):
+      """Read address book from CSV file - UC 14"""
+      try:
+         with open(filename, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            contacts_loaded = 0
+            for row in reader:
+               contact = Contact.from_dict(row)
+               if contact not in self.contacts:
+                  self.contacts.append(contact)
+                  contacts_loaded += 1
+         print(f"Loaded {contacts_loaded} contact(s) from CSV: {filename}")
+         return True
+      except FileNotFoundError:
+         print(f"CSV file {filename} not found.")
+         return False
+      except Exception as e:
+         print(f"Error reading CSV: {e}")
+         return False
+   
+   def write_to_json(self, filename):
+      """Write address book to JSON file - UC 15"""
+      try:
+         data = {
+            'name': self.name,
+            'contacts': [contact.to_dict() for contact in self.contacts]
+         }
+         with open(filename, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=4)
+         print(f"Address book saved to JSON: {filename}")
+         return True
+      except Exception as e:
+         print(f"Error writing to JSON: {e}")
+         return False
+   
+   def read_from_json(self, filename):
+      """Read address book from JSON file - UC 15"""
+      try:
+         with open(filename, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            contacts_loaded = 0
+            for contact_data in data.get('contacts', []):
+               contact = Contact.from_dict(contact_data)
+               if contact not in self.contacts:
+                  self.contacts.append(contact)
+                  contacts_loaded += 1
+         print(f"Loaded {contacts_loaded} contact(s) from JSON: {filename}")
+         return True
+      except FileNotFoundError:
+         print(f"JSON file {filename} not found.")
+         return False
+      except Exception as e:
+         print(f"Error reading JSON: {e}")
+         return False
 
 
 class AddressBookManager:
@@ -308,13 +439,19 @@ def main():
            print("9. Sort by City")
            print("10. Sort by State")
            print("11. Sort by ZIP")
-        print("12. Search by City")
-        print("13. Search by State")
-        print("14. View Persons by City")
-        print("15. View Persons by State")
-        print("16. Count by City")
-        print("17. Count by State")
-        print("18. Exit")
+           print("12. Write to Text File")
+           print("13. Read from Text File")
+           print("14. Write to CSV File")
+           print("15. Read from CSV File")
+           print("16. Write to JSON File")
+           print("17. Read from JSON File")
+        print("18. Search by City")
+        print("19. Search by State")
+        print("20. View Persons by City")
+        print("21. View Persons by State")
+        print("22. Count by City")
+        print("23. Count by State")
+        print("24. Exit")
         
         choice = input("Choose option: ")
         
@@ -398,30 +535,78 @@ def main():
               current_book.sort_by_zip()
         
         elif choice == "12":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              filename = input("Enter filename (e.g., addressbook.txt): ").strip()
+              if filename:
+                 current_book.write_to_file(filename)
+        
+        elif choice == "13":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              filename = input("Enter filename to read: ").strip()
+              if filename:
+                 current_book.read_from_file(filename)
+        
+        elif choice == "14":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              filename = input("Enter CSV filename (e.g., addressbook.csv): ").strip()
+              if filename:
+                 current_book.write_to_csv(filename)
+        
+        elif choice == "15":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              filename = input("Enter CSV filename to read: ").strip()
+              if filename:
+                 current_book.read_from_csv(filename)
+        
+        elif choice == "16":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              filename = input("Enter JSON filename (e.g., addressbook.json): ").strip()
+              if filename:
+                 current_book.write_to_json(filename)
+        
+        elif choice == "17":
+           if not current_book:
+              print("Please select an address book first!")
+           else:
+              filename = input("Enter JSON filename to read: ").strip()
+              if filename:
+                 current_book.read_from_json(filename)
+        
+        elif choice == "18":
            city = input("Enter city name to search: ").strip()
            if city:
               results = manager.search_by_city(city)
               manager.display_search_results(results, "City", city)
         
-        elif choice == "13":
+        elif choice == "19":
            state = input("Enter state name to search: ").strip()
            if state:
               results = manager.search_by_state(state)
               manager.display_search_results(results, "State", state)
         
-        elif choice == "14":
+        elif choice == "20":
            manager.view_persons_by_city()
         
-        elif choice == "15":
+        elif choice == "21":
            manager.view_persons_by_state()
         
-        elif choice == "16":
+        elif choice == "22":
            manager.get_count_by_city()
         
-        elif choice == "17":
+        elif choice == "23":
            manager.get_count_by_state()
         
-        elif choice == "18":
+        elif choice == "24":
            print("Goodbye!")
            break
         
