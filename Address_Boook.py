@@ -8,6 +8,9 @@ class Contact:
         self.zip = zip
         self.phone_number = phone_number
 
+    def __str__(self):
+         return f"{self.first_name} {self.last_name} | {self.city} | {self.phone_number}" 
+
 
 class AddressBook:
     def __init__(self):
@@ -65,7 +68,7 @@ class AddressBook:
         print("Contact removed successfully")
 
 
-# Dictionary to store multiple address books
+
 address_books = {}
 
 while True:
@@ -75,11 +78,12 @@ while True:
     print("3. View Contacts")
     print("4. Edit Contact")
     print("5. Delete Contact")
-    print("6. Exit")
+    print("6. search by City")
+    print("7. Exit")
 
     choice = input("Enter your choice: ")
 
-    # Create Address Book
+   
     if choice == "1":
         name = input("Enter Address Book Name: ")
         if name in address_books:
@@ -88,7 +92,7 @@ while True:
             address_books[name] = AddressBook()
             print(f"Address Book '{name}' created")
 
-    # Add Contact
+    
     elif choice == "2":
         name = input("Enter Address Book Name: ")
         if name not in address_books:
@@ -106,7 +110,6 @@ while True:
         contact = Contact(first_name, last_name, address, city, state, zip, phone_number)
         address_books[name].addContact(contact)
 
-    # View Contacts
     elif choice == "3":
         name = input("Enter Address Book Name: ")
         if name not in address_books:
@@ -114,7 +117,6 @@ while True:
             continue
         address_books[name].desplay_contact()
 
-    # Edit Contact
     elif choice == "4":
         name = input("Enter Address Book Name: ")
         if name not in address_books:
@@ -125,7 +127,7 @@ while True:
         last_name = input("Enter Last Name: ")
         address_books[name].edit_contact(first_name, last_name)
 
-    # Delete Contact
+
     elif choice == "5":
         name = input("Enter Address Book Name: ")
         if name not in address_books:
@@ -136,8 +138,22 @@ while True:
         last_name = input("Enter Last Name: ")
         address_books[name].delete_contact(first_name, last_name)
 
-    # Exit
-    elif choice == "6":
+    elif choice =="6":
+        found = False
+        
+        city =input("Enter the City name:")
+        for bk_name,i in address_books.items():
+            for j in i.contacts:
+                if j.city.lower() == city.lower():
+                    print(f"[{bk_name}] {j}")
+                    found = True
+        if not found:
+            print("No COntacts")            
+        
+
+
+
+    elif choice == "7":
         print("Exiting...")
         break
 
