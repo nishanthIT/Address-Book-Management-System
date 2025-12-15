@@ -41,7 +41,10 @@ class AddressBook:
         contact.state = input("Enter the State: ")
         contact.zip = input("Enter the First Zip: ")
         contact.phone_number = input("Enter the Phone Number: ")
-
+    def delete_contact(self,first_name,last_name):
+        contact = self.find_contact(first_name,last_name)
+        self.contacts.remove(contact)
+        print("Removed Success")
 
 address_book =AddressBook()
 
@@ -50,7 +53,8 @@ while True:
     print("1. Add Contact")
     print("2. View Contacts")
     print("3. Edit contact")
-    print("4. Exit")
+    print("4. Delete contact")
+    print("5. Exit")
 
     choice = input("Enter Your choice: ")
 
@@ -71,8 +75,12 @@ while True:
         first_name = input("Enter the first Name: ")     
         last_name = input("Enter the last Name: ")
         address_book.edit_contact(first_name,last_name)
-
     elif choice =="4":
+        first_name = input("Enter the first Name: ")     
+        last_name = input("Enter the last Name: ")
+        address_book.delete_contact(first_name,last_name)
+
+    elif choice =="5":
         print("exiting...")
         break
     else:
