@@ -140,13 +140,16 @@ while True:
 
     elif choice =="6":
         found = False
+        count =0
         
         city =input("Enter the City name:")
         for bk_name,i in address_books.items():
             for j in i.contacts:
                 if j.city.lower() == city.lower():
                     print(f"[{bk_name}] {j}")
+                    count +=1
                     found = True
+        print(f"Total Count by City:{count}")            
         if not found:
             print("No COntacts")            
         
