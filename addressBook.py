@@ -13,13 +13,29 @@ class Contact:
         return (f"{self.first_name} {self.last_name}\n"
                 f"Address: {self.address}, {self.city}, {self.state}, {self.zip_code}\n"
                 f"Phone: {self.phone}\nEmail: {self.email}\n")
+    
+    def __eq__(self, other):
+        """Override equals method to check for duplicate based on person name"""
+        if not isinstance(other, Contact):
+            return False
+        return (self.first_name.lower() == other.first_name.lower() and 
+                self.last_name.lower() == other.last_name.lower())
+    
+    def __hash__(self):
+        """Override hash method to enable use in sets and dictionaries"""
+        return hash((self.first_name.lower(), self.last_name.lower()))
 
 class AddressBook:
    def __init__(self):
       self.contacts = []
    
    def add_contact(self, contact):
+      # Check for duplicate entry using collection method
+      if any(existing_contact == contact for existing_contact in self.contacts):
+         print(f"Duplicate Entry! Contact '{contact.first_name} {contact.last_name}' already exists in address book.")
+         return False
       self.contacts.append(contact)
+      return True
    
    def show_contacts(self):
       if not self.contacts:
@@ -106,8 +122,8 @@ def main():
             phone = input("Phone: ")
             email = input("Email: ")
             contact = Contact(first_name, last_name, address, city, state, zip_code, phone, email)
-            book.add_contact(contact)
-            print("Contact added.")
+            if book.add_contact(contact):
+                print("Contact added successfully!")
         elif choice == "2":
             book.show_contacts()
         elif choice == "3":
