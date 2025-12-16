@@ -77,7 +77,12 @@ class AddressBook:
     def sort_by_zip(self):
         return sorted(self.contacts,key=lambda c: c.zip.lower())
    
-   
+    def save_to_file(self,filename):
+        with open(filename,"w") as f:
+            for c in self.contacts:
+                line = f"{c.first_name},{c.last_name},{c.address},{c.city},{c.state},{c.zip},{c.phone_number}\n"
+                f.write(line)
+
 
 address_books = {}
 
@@ -93,7 +98,8 @@ while True:
     print("8. sort by city")
     print("9. sort by state")
     print("10. sort by zip")
-    print("11. Exit")
+    print("11. Write to file")
+    print("12. Exit")
 
     choice = input("Enter your choice: ")
 
@@ -204,8 +210,15 @@ while True:
         for i in sorted_list:
             print(i)
 
-    
-    elif choice == "8":
+    elif choice =="11":
+        name = input("Enter Address Book Name: ")
+        if name not in address_books:
+         print("Address Book not found")
+         continue
+        filename = input("Enter file name (exap:  book.txt): ")
+        address_books[name].save_to_file(filename)
+
+    elif choice == "12":
         print("Exiting...")
         break
 
