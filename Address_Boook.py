@@ -96,6 +96,23 @@ class AddressBook:
                  c.city, c.state, c.zip, c.phone_number
              ])
         print("Contacts saved to CSV file")
+    def save_to_json(self, filename):
+    data = []
+    for c in self.contacts:
+        data.append({
+            "first_name": c.first_name,
+            "last_name": c.last_name,
+            "address": c.address,
+            "city": c.city,
+            "state": c.state,
+            "zip": c.zip,
+            "phone": c.phone_number
+        })
+
+    with open(filename, "w") as file:
+        json.dump(data, file, indent=4)
+
+    print("Contacts saved to JSON file")
 
 address_books = {}
 
@@ -113,6 +130,7 @@ while True:
     print("10. sort by zip")
     print("11. Write to file")
     print("12. Write to CSV file")
+    print("13. Write to json file")
     print("12. Exit")
 
     choice = input("Enter your choice: ")
@@ -239,6 +257,14 @@ while True:
          continue
         filename = input("Enter file name (exap:  book.csv): ")
         address_books[name].save_to_csv(filename)
+
+    elif choice =="13":
+        name = input("Enter Address Book Name: ")
+        if name not in address_books:
+         print("Address Book not found")
+         continue
+        filename = input("Enter file name (exap:  book.json): ")
+        address_books[name].save_to_json(filename)    
     
     elif choice == "12":
         print("Exiting...")
