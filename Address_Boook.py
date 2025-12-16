@@ -67,7 +67,9 @@ class AddressBook:
         self.contacts.remove(contact)
         print("Contact removed successfully")
 
-
+    def sort_by_name(self):
+        return sorted(self.contacts,key=lambda c: c.first_name.lower())
+   
 
 address_books = {}
 
@@ -79,6 +81,7 @@ while True:
     print("4. Edit Contact")
     print("5. Delete Contact")
     print("6. search by City")
+    print("7. sort by name")
     print("7. Exit")
 
     choice = input("Enter your choice: ")
@@ -155,8 +158,16 @@ while True:
         
 
 
+    elif choice =="7":
+        name = input("Enter the Address Book:")
+        if name not in address_books:
+            print("Address Bokk Not present")
+        sorted_list = address_books[name].sort_by_name()
+        for i in sorted_list:
+            print(i)
 
-    elif choice == "7":
+    
+    elif choice == "8":
         print("Exiting...")
         break
 
