@@ -9,7 +9,7 @@ class Contact:
         self.phone_number = phone_number
 
     def __str__(self):
-         return f"{self.first_name} {self.last_name} | {self.city} | {self.phone_number}" 
+         return f"{self.first_name} {self.last_name} | {self.city} | {self.phone_number} | {self.state} | {self.zip}" 
 
 
 class AddressBook:
@@ -69,6 +69,14 @@ class AddressBook:
 
     def sort_by_name(self):
         return sorted(self.contacts,key=lambda c: c.first_name.lower())
+    
+    def sort_by_city(self):
+        return sorted(self.contacts,key=lambda c: c.city.lower())
+    def sort_by_state(self):
+        return sorted(self.contacts,key=lambda c: c.state.lower())
+    def sort_by_zip(self):
+        return sorted(self.contacts,key=lambda c: c.zip.lower())
+   
    
 
 address_books = {}
@@ -82,7 +90,10 @@ while True:
     print("5. Delete Contact")
     print("6. search by City")
     print("7. sort by name")
-    print("7. Exit")
+    print("8. sort by city")
+    print("9. sort by state")
+    print("10. sort by zip")
+    print("11. Exit")
 
     choice = input("Enter your choice: ")
 
@@ -163,6 +174,33 @@ while True:
         if name not in address_books:
             print("Address Bokk Not present")
         sorted_list = address_books[name].sort_by_name()
+        for i in sorted_list:
+            print(i)
+
+
+    elif choice =="8":
+        name = input("Enter the Address Book:")
+        if name not in address_books:
+            print("Address Bokk Not present")
+        sorted_list = address_books[name].sort_by_city()
+        for i in sorted_list:
+            print(i)
+
+
+    elif choice =="9":
+        name = input("Enter the Address Book:")
+        if name not in address_books:
+            print("Address Bokk Not present")
+        sorted_list = address_books[name].sort_by_state()
+        for i in sorted_list:
+            print(i)
+
+
+    elif choice =="10":
+        name = input("Enter the Address Book:")
+        if name not in address_books:
+            print("Address Bokk Not present")
+        sorted_list = address_books[name].sort_by_zip()
         for i in sorted_list:
             print(i)
 
