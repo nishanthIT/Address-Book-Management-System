@@ -1,3 +1,7 @@
+
+import csv
+import json
+
 class Contact:
     def __init__(self, first_name, last_name, address, city, state, zip, phone_number):
         self.first_name = first_name
@@ -82,7 +86,16 @@ class AddressBook:
             for c in self.contacts:
                 line = f"{c.first_name},{c.last_name},{c.address},{c.city},{c.state},{c.zip},{c.phone_number}\n"
                 f.write(line)
-
+    def save_to_csv(self, filename):
+        with open(filename,"w") as f:
+            writer = csv.writer(f)
+            writer.writerow(["first_name", "last_name", "address", "city", "state", "zip", "phone"])
+            for c in self.contacts:
+                writer.writerow([
+                 c.first_name, c.last_name, c.address,
+                 c.city, c.state, c.zip, c.phone_number
+             ])
+        print("Contacts saved to CSV file")
 
 address_books = {}
 
@@ -99,6 +112,7 @@ while True:
     print("9. sort by state")
     print("10. sort by zip")
     print("11. Write to file")
+    print("12. Write to CSV file")
     print("12. Exit")
 
     choice = input("Enter your choice: ")
@@ -218,6 +232,14 @@ while True:
         filename = input("Enter file name (exap:  book.txt): ")
         address_books[name].save_to_file(filename)
 
+    elif choice =="12":
+        name = input("Enter Address Book Name: ")
+        if name not in address_books:
+         print("Address Book not found")
+         continue
+        filename = input("Enter file name (exap:  book.csv): ")
+        address_books[name].save_to_csv(filename)
+    
     elif choice == "12":
         print("Exiting...")
         break
